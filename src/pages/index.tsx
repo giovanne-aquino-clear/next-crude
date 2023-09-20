@@ -4,19 +4,26 @@ import Cliente from "@/core/Cliente"
 import Botao from "@/components/botao"
 import Formulario from "@/components/Fomulario"
 import {useEffect, useState} from "react"
+import ClienteRepositorio from "@/core/ClienteRepositorio"
+import ColecaoCliente from "@/backend/db/ColecaoCliente"
 
 
 export default function Home(){
 
+  const repo: ClienteRepositorio = new ColecaoCliente()
   const [cliente, setCliente] = useState<Cliente>(Cliente.vazio())
+  const [clientes, setClientes] = useState<Cliente[]>([])
   const [visivel, setVisivel] = useState<'tabela' | 'form'> ('tabela')
-  const clientes = [
-    new Cliente(' Ana', 34, '1'),
-    new Cliente(' bia', 34, '2'),
+  useEffect(obterTodos, [])
 
-  ]
+  function obterTodos(){
+    repo.obterTodos().then(clientes => {
+      setClientes(clientes)
+      setVisivel('tabela')
+    })
+  }
 
-  function newCustomer(cliente:Cliente){
+  function newCustomer(){
     setCliente(Cliente.vazio())
     setVisivel("form")
   }
@@ -25,14 +32,15 @@ export default function Home(){
     setCliente(cliente)
     setVisivel("form")
   }
-  function deletedCustomer(cliente:Cliente){
-
+  async function deletedCustomer(cliente:Cliente){
+    await repo.excluir(cliente)
+    obterTodos()
   }
 
-  function saveCustomer(cliente: Cliente){
-    setVisivel('tabela')
+  async function saveCustomer(cliente: Cliente){
+    await repo.salvar(cliente)
+    obterTodos()
   }
-
 
   return(
     <div className= {`
@@ -46,9 +54,7 @@ export default function Home(){
       {visivel === 'tabela' ? (
         <>
           <div className= " flex justify-end"></div>
-          <Botao className="mb-4" 
-          onClick={newCustomer}> 
-            Novo Cliente </Botao>
+          <Botao className="mb-4" onClick={newCustomer}>Novo Cliente </Botao>
             <Table clientes={clientes}
             selectedCustomer={selectedCustomer}
             deletedCustomer={deletedCustomer}
