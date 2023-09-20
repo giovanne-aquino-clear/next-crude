@@ -3,9 +3,13 @@ import {IconeEdicao, IconeLixo} from "./Icones";
 
 interface Tableprops{
     clientes: Cliente[]
+    selectedCustomer?: (cliente: Cliente) => void
+    deletedCustomer?: (cliente: Cliente) => void
+
 }
 
 export default function Table(props: Tableprops){
+    const displayActions = props.deletedCustomer || props.selectedCustomer
     
     function renderHeader(){
         return(
@@ -13,7 +17,7 @@ export default function Table(props: Tableprops){
                 <th className="text-left p-4">Código</th>
                 <th className="text-left p-4">nome</th>
                 <th className="text-left p-4">idade</th>
-                <th className="p-4">Ações</th>
+              {displayActions ? <th className="p-4">Ações</th> : false}  
 
  
             </tr>
@@ -28,7 +32,7 @@ export default function Table(props: Tableprops){
                <td className="text-left p-4">{cliente.id}</td>
                <td className="text-left p-4">{cliente.nome}</td>
                <td className="text-left p-4">{cliente.idade}</td>
-                {renderActions(cliente)}
+                {displayActions ? renderActions(cliente) : false}
            </tr>
         )
     })
@@ -36,16 +40,25 @@ export default function Table(props: Tableprops){
 
     function renderActions(cliente: Cliente){
         return(
-            <td className="fl">
-                <button className= {
-                    `flex justify-center items-center
-                     text-green-600 rounded-full p-2 m-1
-                     hover: bg-purple-50`}> {IconeEdicao}</button>
-                <button className= {
+            <td className="flex justify-center">
+                {props.selectedCustomer ? (
+                    
+                    <button onClick={()=> props.selectedCustomer?.(cliente)}className= {
+                        `flex justify-center items-center
+                         text-green-600 rounded-full p-2 m-1
+                         hover: bg-purple-50`}> {IconeEdicao}</button>
+                ): false}
+
+                {props.deletedCustomer ? (
+                 <button onClick={()=> props.deletedCustomer?.(cliente)}className= {
                     `flex justify-center items-center
                      text-red-600 rounded-full p-2 m-1
                      hover: bg-purple-50`}> {IconeLixo} </button>
+
+                ): false}
+
             </td>
+                
         )
     }
    

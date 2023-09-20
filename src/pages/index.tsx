@@ -10,6 +10,12 @@ export default function Home(){
 
   ]
 
+  function selectedCustomer(cliente:Cliente){
+
+  }
+  function deletedCustomer(cliente:Cliente){
+
+  }
 
   return(
     <div className= {`
@@ -20,7 +26,10 @@ export default function Home(){
    `}>
 
     <Layout titulo="cadastro simples"> 
-      <Table clientes={clientes}></Table>
+      <Table clientes={clientes}
+      selectedCustomer={selectedCustomer}
+      deletedCustomer={deletedCustomer}
+      />
     </Layout>
 
     </div>
