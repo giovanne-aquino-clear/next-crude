@@ -8,24 +8,31 @@ import {useEffect, useState} from "react"
 
 export default function Home(){
 
+  const [cliente, setCliente] = useState<Cliente>(Cliente.vazio())
+  const [visivel, setVisivel] = useState<'tabela' | 'form'> ('tabela')
   const clientes = [
     new Cliente(' Ana', 34, '1'),
     new Cliente(' bia', 34, '2'),
 
   ]
 
-  function selectedCustomer(cliente:Cliente){
+  function newCustomer(cliente:Cliente){
+    setCliente(Cliente.vazio())
+    setVisivel("form")
+  }
 
+  function selectedCustomer(cliente:Cliente){
+    setCliente(cliente)
+    setVisivel("form")
   }
   function deletedCustomer(cliente:Cliente){
 
   }
 
   function saveCustomer(cliente: Cliente){
-
+    setVisivel('tabela')
   }
 
-  const [visivel, setVisivel] = useState<'tabela' | 'form'>('tabela')
 
   return(
     <div className= {`
@@ -40,7 +47,7 @@ export default function Home(){
         <>
           <div className= " flex justify-end"></div>
           <Botao className="mb-4" 
-          onClick={() => setVisivel('form')}> 
+          onClick={newCustomer}> 
             Novo Cliente </Botao>
             <Table clientes={clientes}
             selectedCustomer={selectedCustomer}
@@ -50,7 +57,7 @@ export default function Home(){
 
         ) : (
           <Formulario 
-          cliente={clientes[0]}
+          cliente={cliente}
           clienteMudou={saveCustomer}
           cancelado={()=> setVisivel('tabela')}
           />
